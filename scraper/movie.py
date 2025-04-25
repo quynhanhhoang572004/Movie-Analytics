@@ -129,7 +129,7 @@ if __name__ == "__main__":
     genres = saver.save_genres_list()
     
     # Then work with specific genres (here using the first 3 as an example)
-    for genre in genres[:3]:
+    for genre in genres[:5]:
         # Save movies with basic info
         saver.save_movies_by_genre(genre["id"], genre["name"])
         
