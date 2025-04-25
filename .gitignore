@@ -1,0 +1,11 @@
+# Google Cloud credentials
+keys/
+*.json
+.env
+# Terraform & GCP sensitive files
+*.tfstate
+*.tfstate.backup
+.terraform/
+terraform.tfvars
+*.json  # Service account keys
+.env
