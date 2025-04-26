@@ -176,3 +176,13 @@ gsutil rm -r gs://<your-bucket-name>
 
 If you want, reply **"YES make zip package"**, I'll do it fast for you! 🚀  
 (Very helpful if you want to share with your team!)
+
+## 1. Build the docker image
+docker build -t pyspark-docker .
+
+## 2. Prepare your pyspark script
+
+## 3. Run the script in docker
+docker run -it --rm -p 4041:4040 -v ${PWD}/test.py:/app/test.py pyspark-docker python /app/test.py (your file python)
+
+```bash
