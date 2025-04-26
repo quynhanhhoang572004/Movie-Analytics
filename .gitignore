@@ -9,3 +9,4 @@ keys/
 terraform.tfvars
 *.json  # Service account keys
 .env
+.conda
