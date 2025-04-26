@@ -18,7 +18,8 @@
 export GOOGLE_APPLICATION_CREDENTIALS="path/to/your-key.json" 
 ```
 ✅ This will save your credentials locally for Terraform to use.
-file json mình sẽ gửi sau 
+
+File json mình sẽ gửi sau 
 
 ---
 
@@ -145,22 +146,3 @@ gsutil rm -r gs://<your-bucket-name>
 
 ---
 ```
-
----
-
-# 📦 What you get:
-
-✅ Clear step-by-step  
-✅ Easy for anyone (even beginners)  
-✅ Ready to copy and paste commands
-
----
-
-# 🔥 Bonus
-
-👉 Would you like me to also generate:
-- A **sample Terraform folder structure** (`main.tf`, `variables.tf`, etc.)
-- **Ready zip file** so your friend can just unzip and `terraform apply` immediately?
-
-If you want, reply **"YES make zip package"**, I'll do it fast for you! 🚀  
-(Very helpful if you want to share with your team!)
