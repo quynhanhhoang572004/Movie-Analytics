@@ -11,3 +11,5 @@ terraform.tfvars
 .env
 .conda
 .terraform.lock.hcl
+
+__pycache__
