@@ -1,16 +1,4 @@
-Perfect! 🚀  
-You want a **README** file to **guide your friend** on how to:
 
-- Deploy the infrastructure (Bucket + Dataproc Cluster) using Terraform
-- Upload PySpark script to GCS
-- Submit a PySpark job on the Dataproc cluster
-- Read/write data on Google Cloud Storage
-
-✅ I'll write it clearly and step-by-step, super easy for your friend to follow.
-
----
-
-# 📄 README.md
 
 ```markdown
 # Deploy Dataproc Cluster and Submit PySpark Job on Google Cloud (Local Setup)
