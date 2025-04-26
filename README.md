@@ -145,4 +145,3 @@ gsutil rm -r gs://<your-bucket-name>
 - Storage costs are small, cluster compute costs are higher.
 
 ---
-```
