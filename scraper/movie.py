@@ -53,7 +53,7 @@ class MovieDataSaver:
         
         print(f"Saved {len(movies)} {genre_name} movies to {output_path}")
 
-    def save_sample_reviews_by_genre(self, genre_id, genre_name, reviews_per_movie=5):
+    def save_sample_reviews_by_genre(self, genre_id, genre_name, reviews_per_movie=10):
         """Save sample reviews for movies in a specific genre"""
         movies = self.client.get_movies_by_genre(genre_id)
         if not movies:
@@ -79,7 +79,7 @@ class MovieDataSaver:
         print(f"Saved {reviews_collected} reviews for {genre_name} movies to {output_path}")
 
     
-    def save_movie_ratings(self, genre_id, genre_name, movie_count=20):
+    def save_movie_ratings(self, genre_id, genre_name, movie_count=50):
         """Save detailed rating information for mvoies in a genre"""
         movies = self.client.get_movies_by_genre(genre_id)[:movie_count]
         if not movies:
