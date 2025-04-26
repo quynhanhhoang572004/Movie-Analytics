@@ -10,3 +10,4 @@ terraform.tfvars
 *.json  # Service account keys
 .env
 .conda
+.terraform.lock.hcl
