@@ -3,5 +3,5 @@ os.environ['HADOOP_HOME'] = "/opt/hadoop"
 
 from pyspark.sql import SparkSession
 spark = SparkSession.builder.getOrCreate()
-df = spark.createDataFrame([(1, "foo"), (2, "bar")], ["id", "text"])
+df = spark.read.parquet('/app/data_parquet/genres.parquet')
 print(df.show())
