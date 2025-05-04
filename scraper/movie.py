@@ -2,7 +2,7 @@ import os
 import csv
 from dotenv import load_dotenv
 
-from client import TMDBClient
+from scraper.client import TMDBClient
 
 MOVIE_HEADERS = [
     "id", "title", "original_title", "original_language", "release_date",
@@ -58,6 +58,17 @@ class MovieDataSaver:
                 break
             all_movies.extend(result)
         return all_movies
+    
+    # Method for Kafka producer to call
+    def yield_movies_by_genre(self, genre_id, genre_name, max_pages=6):
+        movies = self._get_movies_by_genre(genre_id=genre_id, max_pages=max_pages)
+        if not movies:
+            return
+        for movie in movies:
+            details = self.client.get_details(movie["id"])
+            row = self._extract_movie(details)
+            row.insert(0, genre_name.lower())  
+        yield row
 
     @staticmethod
     def _extract_movie(details: dict) -> list:
