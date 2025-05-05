@@ -23,6 +23,7 @@ RUN wget https://archive.apache.org/dist/spark/spark-3.5.2/spark-3.5.2-bin-hadoo
 
 # Install Python dependencies
 RUN pip install pyspark==3.5.2 jupyterlab
+RUN pip install pandas pyarrow
 
 # Default command
 CMD ["bash"]
