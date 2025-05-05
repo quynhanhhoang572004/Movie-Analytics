@@ -38,7 +38,7 @@ class TMDBClient:
         print(f"Fetching reviews for movie ID: {movie_id}")
         data = self._get(f"movie/{movie_id}/reviews", {"language": "en-US", "page": 1})
         results = data.get("results", [])
-        return [r["content"].replace("\n", " ").strip()[:200] for r in results][:limit]
+        return [r["content"] for r in results][:limit]
 
     def get_details(self, movie_id):
         print(f"Fetching details for movie ID: {movie_id}")
