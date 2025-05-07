@@ -1,8 +1,4 @@
-import os
-import time
 import requests
-import csv
-from dotenv import load_dotenv
 
 class TMDBClient:
     def __init__(self, api_key):
