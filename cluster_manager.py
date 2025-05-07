@@ -60,8 +60,8 @@ class ClusterManager:
 
 if __name__ == "__main__":
     manager = ClusterManager(
-        project_id="big-data-project-459105",
-        region="asia-southeast1",
+        project_id="big-data-project-459118",
+        region="us-central1",
         cluster_name="tmdb-cluster",
         service_account_path="keys/my_key.json"
     )

@@ -31,7 +31,7 @@ if __name__ == "__main__":
         if not movies:
             print(f"No movies found for genre: {genre_name}")
             return False
-        return uploader.upload_json(movies, blob_name)
+        return uploader.upload_parquet(movies, blob_name)
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = {executor.submit(process_genre, genre): genre["name"] for genre in genres[:10]}

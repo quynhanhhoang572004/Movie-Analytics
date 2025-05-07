@@ -1,44 +1,74 @@
 from pyspark.sql import SparkSession, DataFrame
-from pyspark.sql.functions import col
+from pyspark.sql.functions import from_json, explode
+from pyspark.sql.types import *
 
-class MovieTransformer:
-    def __init__(self, input_path: str, output_path: str):
-        self.input_path = input_path
-        self.output_path = output_path
-        self.spark = SparkSession.builder.appName("TMDbMoviePipeline").getOrCreate()
 
-    def read_data(self) -> DataFrame:
-        print(f"Reading data from: {self.input_path}")
-        df = self.spark.read.json(self.input_path)
-        print(f"Loaded {df.count()} records.")
-        return df
+class TMDBMovieProcessor:
+    def __init__(self, spark: SparkSession, input_dir: str, dataset: str, project_id: str):
+        self.spark = spark
+        self.input_dir = input_dir.rstrip("/")
+        self.dataset = dataset
+        self.project_id = project_id
+        self.schema = self._define_schema()
 
-    def transform(self, df: DataFrame) -> DataFrame:
-        print("Transforming data...")
-        return df.select(
-            "id", "title", "original_language", "release_date",
-            "popularity", "vote_average", "vote_count",
-            "overview", "budget", "revenue", "runtime"
-        ).dropna()
+    def _define_schema(self) -> StructType:
+        return StructType([
+            StructField("id", IntegerType(), True),
+            StructField("title", StringType(), True),
+            StructField("original_title", StringType(), True),
+            StructField("original_language", StringType(), True),
+            StructField("release_date", StringType(), True),
+            StructField("popularity", DoubleType(), True),
+            StructField("vote_average", DoubleType(), True),
+            StructField("vote_count", IntegerType(), True),
+            StructField("overview", StringType(), True),
+            StructField("genre_ids", ArrayType(IntegerType()), True),
+            StructField("adult", BooleanType(), True),
+            StructField("backdrop_path", StringType(), True),
+            StructField("poster_path", StringType(), True),
+            StructField("video", BooleanType(), True)
+        ])
 
-    def write_data(self, df: DataFrame):
-        print("Writing cleaned data to BigQuery...")
+
+    def process_all_files(self, file_map: dict):
+        for filename, table_suffix in file_map.items():
+            print(f"▶ Processing file: {filename}")
+            try:
+                df = self._read_and_parse_json(f"{self.input_dir}/{filename}")
+                df_clean = df.dropDuplicates(["id"])
+                self._write_to_bigquery(df_clean, table_suffix)
+                print(f"✅ Written to BigQuery table: {table_suffix}")
+            except Exception as e:
+                print(f"❌ Failed processing {filename}: {e}")
+
+    def _read_and_parse_json(self, path: str) -> DataFrame:
+        raw_df = self.spark.read.text(path)
+        json_df = raw_df.select(from_json("value", ArrayType(self.schema)).alias("data"))
+        return json_df.select(explode("data").alias("movie")).select("movie.*")
+
+    def _write_to_bigquery(self, df: DataFrame, table_suffix: str):
+        table_path = f"{self.project_id}.{self.dataset}.{table_suffix}"
         df.write.format("bigquery") \
-            .option("table", "big-data-project-459105.tmdb_dataset.movie_dataset2025") \
+            .option("table", table_path) \
             .option("writeMethod", "direct") \
             .mode("overwrite") \
             .save()
-        print("Write to BigQuery complete.")
-
-    def run(self):
-        df = self.read_data()
-        df_clean = self.transform(df)
-        self.write_data(df_clean)
 
 
 if __name__ == "__main__":
-    input_path = "gs://movie-data-bigdata/data/movies/*.json"
-    output_path = "gs://movie-data-bigdata/data_parquet/movies_cleaned"
+    spark = SparkSession.builder.appName("TMDBMoviePipeline").getOrCreate()
 
-    pipeline = MovieTransformer(input_path, output_path)
-    pipeline.run()
+    file_to_table_map = {
+        "movies_action.json": "movies_action",
+        "movies_comedy.json": "movies_comedy",
+        "movies_drama.json": "movies_drama",
+        # Add more as needed
+    }
+
+    processor = TMDBMovieProcessor(
+        spark=spark,
+        input_dir="gs://movie-data-bigdata/data/movies",
+        dataset="tmdb_dataset",
+        project_id="big-data-project-459118"
+    )
+    processor.process_all_files(file_to_table_map)
