@@ -24,7 +24,7 @@ if __name__ == "__main__":
         genre_id = genre["id"]
         genre_name = genre["name"]
         safe_name = genre_name.lower().replace(" ", "_")
-        blob_name = f"{GCS_PATH_PREFIX}movies_{safe_name}.json"
+        blob_name = f"{GCS_PATH_PREFIX}movies_{safe_name}.parquet"
 
         print(f"Fetching movies for genre: {genre_name}")
         movies = fetcher.get_movies_by_genre(genre_id, max_pages=6)

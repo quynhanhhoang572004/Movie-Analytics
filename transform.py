@@ -1,5 +1,4 @@
 from pyspark.sql import SparkSession, DataFrame
-from pyspark.sql.functions import from_json, explode
 from pyspark.sql.types import *
 
 
@@ -9,42 +8,20 @@ class TMDBMovieProcessor:
         self.input_dir = input_dir.rstrip("/")
         self.dataset = dataset
         self.project_id = project_id
-        self.schema = self._define_schema()
-
-    def _define_schema(self) -> StructType:
-        return StructType([
-            StructField("id", IntegerType(), True),
-            StructField("title", StringType(), True),
-            StructField("original_title", StringType(), True),
-            StructField("original_language", StringType(), True),
-            StructField("release_date", StringType(), True),
-            StructField("popularity", DoubleType(), True),
-            StructField("vote_average", DoubleType(), True),
-            StructField("vote_count", IntegerType(), True),
-            StructField("overview", StringType(), True),
-            StructField("genre_ids", ArrayType(IntegerType()), True),
-            StructField("adult", BooleanType(), True),
-            StructField("backdrop_path", StringType(), True),
-            StructField("poster_path", StringType(), True),
-            StructField("video", BooleanType(), True)
-        ])
-
 
     def process_all_files(self, file_map: dict):
         for filename, table_suffix in file_map.items():
-            print(f"▶ Processing file: {filename}")
+            print(f"▶ Loading raw file: {filename}")
             try:
-                df = self._read_and_parse_json(f"{self.input_dir}/{filename}")
-                df_clean = df.dropDuplicates(["id"])
-                self._write_to_bigquery(df_clean, table_suffix)
-                print(f"✅ Written to BigQuery table: {table_suffix}")
+                df = self._read_parquet(f"{self.input_dir}/{filename}")
+                print(f"Row count: {df.count()}")  
+                self._write_to_bigquery(df, table_suffix)
+                print(f"Raw data written to BigQuery: {table_suffix}")
             except Exception as e:
-                print(f"❌ Failed processing {filename}: {e}")
+                print(f"Failed loading {filename}: {e}")
 
-    def _read_and_parse_json(self, path: str) -> DataFrame:
-        raw_df = self.spark.read.text(path)
-        json_df = raw_df.select(from_json("value", ArrayType(self.schema)).alias("data"))
-        return json_df.select(explode("data").alias("movie")).select("movie.*")
+    def _read_parquet(self, path: str) -> DataFrame:
+        return self.spark.read.parquet(path)
 
     def _write_to_bigquery(self, df: DataFrame, table_suffix: str):
         table_path = f"{self.project_id}.{self.dataset}.{table_suffix}"
@@ -53,16 +30,15 @@ class TMDBMovieProcessor:
             .option("writeMethod", "direct") \
             .mode("overwrite") \
             .save()
-
-
+        
 if __name__ == "__main__":
-    spark = SparkSession.builder.appName("TMDBMoviePipeline").getOrCreate()
+    spark = SparkSession.builder.appName("TMDBMovieParquetPipeline").getOrCreate()
 
     file_to_table_map = {
-        "movies_action.json": "movies_action",
-        "movies_comedy.json": "movies_comedy",
-        "movies_drama.json": "movies_drama",
-        # Add more as needed
+        "movies_action.parquet": "movies_action",
+        "movies_comedy.parquet": "movies_comedy",
+        "movies_drama.parquet": "movies_drama",
+      
     }
 
     processor = TMDBMovieProcessor(
@@ -72,3 +48,4 @@ if __name__ == "__main__":
         project_id="big-data-project-459118"
     )
     processor.process_all_files(file_to_table_map)
+
