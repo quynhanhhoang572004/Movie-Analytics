@@ -35,7 +35,7 @@ class ClusterManager:
             config=ClusterConfig(
                 master_config=InstanceGroupConfig(
                     num_instances=1,
-                    machine_type_uri="n1-standard-2",
+                    machine_type_uri="n1-standard-4",
                     disk_config={"boot_disk_size_gb": 50}
                 ),
                 software_config=SoftwareConfig(
@@ -43,7 +43,7 @@ class ClusterManager:
                     properties={"dataproc:dataproc.allow.zero.workers": "true"}
                 ),
                 gce_cluster_config=GceClusterConfig(
-                    zone_uri=f"{self.region}-a"
+                    zone_uri=f"{self.region}-c"
                 )
             )
         )
