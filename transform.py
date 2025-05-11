@@ -35,9 +35,10 @@ if __name__ == "__main__":
     spark = SparkSession.builder.appName("TMDBMovieParquetPipeline").getOrCreate()
 
     file_to_table_map = {
-        "movies_action.parquet": "movies_action",
-        "movies_comedy.parquet": "movies_comedy",
-        "movies_drama.parquet": "movies_drama",
+       "movies_adventure.parquet": "movies_adventure",
+        "movies_crime.parquet": "movies_crime",
+        "movies_family.parquet": "movies_family",
+
       
     }
 
@@ -48,4 +49,3 @@ if __name__ == "__main__":
         project_id="big-data-project-459118"
     )
     processor.process_all_files(file_to_table_map)
-
