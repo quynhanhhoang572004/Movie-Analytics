@@ -15,8 +15,8 @@ class TMDBFetcher:
                 if not result:
                     break
                 all_movies.extend(result)
-                time.sleep(0.25)  # TMDB rate limit
+                time.sleep(0.25) 
             except Exception as e:
-                print(f"Error fetching page {page} for genre {genre_id}: {e}")
+                print(f"error fetching page {page} for genre {genre_id}: {e}")
                 break
         return all_movies

@@ -11,7 +11,7 @@ class TMDBMovieProcessor:
 
     def process_all_files(self, file_map: dict):
         for filename, table_suffix in file_map.items():
-            print(f"▶ Loading raw file: {filename}")
+            print(f"Loading raw file: {filename}")
             try:
                 df = self._read_parquet(f"{self.input_dir}/{filename}")
                 print(f"Row count: {df.count()}")  
@@ -38,8 +38,6 @@ if __name__ == "__main__":
        "movies_adventure.parquet": "movies_adventure",
         "movies_crime.parquet": "movies_crime",
         "movies_family.parquet": "movies_family",
-
-      
     }
 
     processor = TMDBMovieProcessor(

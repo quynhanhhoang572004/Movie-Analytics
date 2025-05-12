@@ -14,19 +14,15 @@ class GCSUploader:
         attempt = 1
         while attempt <= max_retries:
             try:
-                # Parse JSON string if needed
                 if isinstance(data, str):
                     data = json.loads(data)
 
-                # Normalize to a DataFrame
                 df = pd.DataFrame(data if isinstance(data, list) else [data])
                 
-                # Convert to Parquet
                 buffer = io.BytesIO()
                 df.to_parquet(buffer, index=False)
                 buffer.seek(0)
 
-                # Upload to GCS
                 blob = self.bucket.blob(destination_blob_name)
                 blob.upload_from_file(buffer, content_type="application/octet-stream")
 
