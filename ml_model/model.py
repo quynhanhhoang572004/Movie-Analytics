@@ -27,17 +27,21 @@ class LoadData:
 
 class Preprocess:
     def __init__(self):
-         self.feature_cols = ["popularity", "vote_average", "release_year", "release_month"]
+         self.feature_cols = ["popularity", "vote_count", "release_year", "release_month"]
 
 
     def transform(self, df):
         print("Preprocessing")
         df = df.withColumn("release_date", to_date(col("release_date"), "yyyy-MM-dd"))
+        
         df = df.withColumn("release_year", year(col("release_date")))
+        
         df = df.withColumn("release_month", month(col("release_date")))
+
         df = df.withColumn("label",
                 when(df["vote_average"] < 6.5, 0).otherwise(1))
-        df = df.dropna(subset=["popularity", "vote_average", "release_year", "release_month"])
+        
+        df = df.dropna(subset=["popularity", "vote_count", "release_year", "release_month"])
 
         assembler = VectorAssembler(inputCols=self.feature_cols, outputCol="assembler_features")
         df = assembler.transform(df)

@@ -17,7 +17,7 @@ job_client = dataproc_v1.JobControllerClient.from_service_account_file(
 job_details = {
     "placement": {"cluster_name": CLUSTER_NAME},
     "pyspark_job": {
-        "main_python_file_uri": "gs://movie-data-bigdata/__main__.py",
+        "main_python_file_uri": "gs://movie-data-bigdata/model.py",
         "jar_file_uris": [
             "gs://spark-lib/bigquery/spark-bigquery-with-dependencies_2.12-0.36.0.jar"
         ]
