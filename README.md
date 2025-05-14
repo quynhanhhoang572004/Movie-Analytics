@@ -109,8 +109,8 @@ gcloud dataproc jobs submit pyspark transform.py \
 * Most popular movies by year
 * Average rating per genre
 * Trends in movie production over time
-Example:
-./drama_movie_visualize.png
+* Example:
+![Drama Movie Visualization](./drama_movie_visualize.png)
 
 ---
 
