@@ -120,4 +120,3 @@ This project is licensed under the MIT License.
 
 ---
 
-Let me know if you'd like me to generate the actual code files (`fetch_and_convert.py`, `transform.py`, etc.) as well!
